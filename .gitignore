@@ -1,0 +1,10 @@
+*.log
+*.iml
+*.ipr
+*.iws
+.idea
+bin/
+project/
+target/
+build/
+*.class
