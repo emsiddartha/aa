@@ -9,8 +9,8 @@ val akka = "com.typesafe.akka" %% "akka-actor" % "2.5.24"
 val springBoot = "org.springframework.boot" % "spring-boot-starter-web" % "2.1.7.RELEASE"
 val logging = "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2"
 val json4s = "org.json4s" %% "json4s-jackson" % "3.6.7"
-val mongodb = "org.mongodb.scala" %% "mongo-scala-driver" % "2.1.0"
-
+val mongodb = "org.mongodb.scala" %% "mongo-scala-driver" % "2.7.0"
+val typesafe = "com.github.pureconfig" %% "pureconfig" % "0.11.1"
 
 lazy val core = (project in file("core")).dependsOn(protocol).settings(
   name := "core",
@@ -21,7 +21,8 @@ lazy val core = (project in file("core")).dependsOn(protocol).settings(
   libraryDependencies += springBoot,
   libraryDependencies += logging,
   libraryDependencies += json4s,
-  libraryDependencies += mongodb
+  libraryDependencies += mongodb,
+  libraryDependencies += typesafe
 )
 
 lazy val protocol = (project in file("protocol")).settings(
