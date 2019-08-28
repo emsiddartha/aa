@@ -1,6 +1,6 @@
 version := "0.1"
 
-scalaVersion := "2.13.0"
+ThisBuild / scalaVersion := "2.13.0"
 
 val scalactic = "org.scalactic" %% "scalactic" % "3.0.8"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.8"
@@ -13,6 +13,9 @@ val mongodb = "org.mongodb.scala" %% "mongo-scala-driver" % "2.7.0"
 val typesafe = "com.github.pureconfig" %% "pureconfig" % "0.11.1"
 val jwtJson4s = "com.pauldijou" %% "jwt-json4s-jackson" % "4.0.0"
 
+
+val utillib = "org.bheaver.ngl4" %% "util-lib" % "0.1"
+
 lazy val core = (project in file("core")).dependsOn(protocol).settings(
   name := "core",
   libraryDependencies += scalaTest % Test,
@@ -24,7 +27,9 @@ lazy val core = (project in file("core")).dependsOn(protocol).settings(
   libraryDependencies += json4s,
   libraryDependencies += mongodb,
   libraryDependencies += typesafe,
-  libraryDependencies += jwtJson4s
+  libraryDependencies += jwtJson4s,
+
+  libraryDependencies += utillib
 )
 
 lazy val protocol = (project in file("protocol")).settings(

@@ -4,7 +4,6 @@ import com.mongodb.client.model.Filters
 import com.typesafe.scalalogging.Logger
 import org.bheaver.ngl4.aa.authentication.datastore.{PatronDS, PatronDSImpl}
 import org.bheaver.ngl4.aa.authentication.exceptions.{AuthenticationFailureException, BadRequestException}
-import org.bheaver.ngl4.aa.db.DBConnection
 import org.mongodb.scala.{MongoCollection, MongoDatabase}
 import org.mongodb.scala.bson.collection.immutable.Document
 

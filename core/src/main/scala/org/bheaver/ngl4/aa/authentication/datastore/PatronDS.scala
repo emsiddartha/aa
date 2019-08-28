@@ -1,6 +1,6 @@
 package org.bheaver.ngl4.aa.authentication.datastore
 
-import org.bheaver.ngl4.aa.db.DBConnection
+import org.bheaver.ngl4.util.db.DBConnection
 import org.mongodb.scala.MongoDatabase
 import org.mongodb.scala.bson.collection.immutable.Document
 import org.mongodb.scala.model.Filters._
@@ -12,9 +12,9 @@ trait PatronDS {
   def findByCredentials(username: String, libCode: String, password: String): Future[Option[Document]]
 }
 
-class PatronDSImpl extends PatronDS{
+class PatronDSImpl(dbConnection: DBConnection) extends PatronDS{
   override def findByCredentials(username: String, libCode: String, password: String): Future[Option[Document]] = {
-    val mongoDatabase:MongoDatabase = DBConnection(libCode)
+    val mongoDatabase:MongoDatabase = dbConnection.getDatabase(libCode)
     mongoDatabase.getCollection(collection).find(
       and(or(equal("patron_id",username),equal("email",username)),
         equal("user_password",password)
