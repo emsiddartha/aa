@@ -10,7 +10,8 @@ import org.scalatest.Matchers._
 class Authentication extends UnitTestBase {
   val logger = Logger(classOf[Authentication])
   def fixture = new {
-    val authenticationServiceImpl = new AuthenticationServiceImpl
+    //val authenticationServiceImpl = new AuthenticationServiceImpl
+    val authenticationServiceImpl:AuthenticationService = null
   }
 
   "Authentication Request" should "throw BadRequest if any parameter except request id is empty" in {

@@ -17,13 +17,10 @@ trait AuthenticationService {
   def authenticate(authenticationRequest: AuthenticationRequest): Future[AuthenticationSuccessResponse]
 }
 
-class AuthenticationServiceImpl extends AuthenticationService {
+class AuthenticationServiceImpl(val jwtService: JWTService, val patronDS: PatronDS ) extends AuthenticationService {
   val logger = Logger(classOf[AuthenticationServiceImpl])
-  val jwtService: JWTService = new JWTServiceImpl
   override def authenticate(authenticationRequest: AuthenticationRequest): Future[AuthenticationSuccessResponse] = {
-    implicit val mongoDatabase:MongoDatabase = DBConnection(authenticationRequest.libCode)
-    val patronDS: PatronDS = new PatronDSImpl
-    patronDS.findByCredentials(authenticationRequest.userName,authenticationRequest.password)
+    patronDS.findByCredentials(authenticationRequest.userName,authenticationRequest.libCode, authenticationRequest.password)
       .map(documentOpt => {
         documentOpt match {
           case Some(value) =>new AuthenticationSuccessResponse("",value.getString("patron_id"),value.getString("fname"),value.getString("mname"),value.getString("lname"),"dept","patcat")
