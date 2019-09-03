@@ -28,7 +28,7 @@ class AAController {
   @Qualifier("AuthenticationService")
   var authenticationService: AuthenticationService = null
 
-  @GetMapping(value = Array("/authenticate"), produces = Array(MediaType.APPLICATION_JSON_VALUE))
+  @GetMapping(value = Array("/v1/authenticate"), produces = Array(MediaType.APPLICATION_JSON_VALUE))
   def authenticate(@RequestBody authenticationRequest: AuthenticationRequest,
                    httpServletResponse: HttpServletResponse): CompletionStage[String] = {
     FutureConverters.toJava(
