@@ -1,5 +1,7 @@
 package org.bheaver.ngl4.aa.authentication.exceptions
 
-class BadRequestException(val message: String) extends RuntimeException(message){
+import org.bheaver.ngl4.util.exceptions.HTTPException
 
+class BadRequestException(val message: String) extends HTTPException{
+  override def statusCode = 400
 }

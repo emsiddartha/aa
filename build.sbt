@@ -15,6 +15,7 @@ val jwtJson4s = "com.pauldijou" %% "jwt-json4s-jackson" % "4.0.0"
 
 
 val utillib = "org.bheaver.ngl4" %% "util-lib" % "0.1"
+val scalatime = "com.github.nscala-time" %% "nscala-time" % "2.22.0"
 
 lazy val core = (project in file("core")).dependsOn(protocol).settings(
   name := "core",
@@ -28,8 +29,8 @@ lazy val core = (project in file("core")).dependsOn(protocol).settings(
   libraryDependencies += mongodb,
   libraryDependencies += typesafe,
   libraryDependencies += jwtJson4s,
-
-  libraryDependencies += utillib
+  libraryDependencies += utillib,
+  libraryDependencies += scalatime
 )
 
 lazy val protocol = (project in file("protocol")).settings(

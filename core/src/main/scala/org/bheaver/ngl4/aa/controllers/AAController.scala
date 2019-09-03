@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.{GetMapping, RequestBody, Request
 
 import scala.compat.java8.FutureConverters
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
 
 @RestController
 @RequestMapping(Array("/aa"))
@@ -29,12 +31,18 @@ class AAController {
   @GetMapping(value = Array("/authenticate"), produces = Array(MediaType.APPLICATION_JSON_VALUE))
   def authenticate(@RequestBody authenticationRequest: AuthenticationRequest,
                    httpServletResponse: HttpServletResponse): CompletionStage[String] = {
-    FutureConverters.toJava(authenticationService.authenticate(authenticationRequest).map(response => {
-      logger.debug(write(response))
-      write(response)
-    }).recover {
-      case e: HTTPException => JSONGenerator.toJSON(e, httpServletResponse)
-    }
+    FutureConverters.toJava(
+      Try(authenticationService.authenticate(authenticationRequest)) match {
+        case Failure(e: HTTPException) => Future(JSONGenerator.toJSON(e,httpServletResponse))
+        case Success(value) => {
+          value.map(response => {
+            logger.debug(write(response))
+            write(response)
+          }).recover {
+            case e: HTTPException => JSONGenerator.toJSON(e, httpServletResponse)
+          }
+        }
+      }
     )
   }
 }

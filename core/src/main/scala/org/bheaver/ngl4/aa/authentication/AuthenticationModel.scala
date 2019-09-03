@@ -5,7 +5,7 @@ class AuthenticationModel
 case class AuthenticationRequest(libCode: String,
                                  userName: String,
                                  password: String,
-                                 requestId: Option[String])
+                                 requestId: String)
 
 case class AuthenticationSuccessResponse(jwtToken: String,
                                          patronId: String,
@@ -13,4 +13,7 @@ case class AuthenticationSuccessResponse(jwtToken: String,
                                          mname: String,
                                          lname: String,
                                          department: String,
-                                         patronCategory: String)
+                                         departmentId: String,
+                                         patronCategory: String,
+                                         patronCategoryId: String,
+                                         requestId: String)
