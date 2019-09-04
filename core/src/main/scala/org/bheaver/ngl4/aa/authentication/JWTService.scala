@@ -18,7 +18,7 @@ import scala.util.{Failure, Success}
 
 case class EncodeRequest(patronId: String, libCode: String)
 
-case class DecodeRequest(jwtToken: String, patronId: String, libCode: String)
+case class DecodeRequest(jwtToken: String, patronId: String, libCode: String, renewToken: Boolean = true, requestId: String = null)
 
 trait JWTService {
   def encode(encodeRequest: EncodeRequest): String
@@ -26,6 +26,8 @@ trait JWTService {
   def isJWTValid(decodeRequest: DecodeRequest): Boolean
 
   def renewToken(decodeRequest: DecodeRequest): Option[String]
+
+  def validateJWTToken(decodeRequest: DecodeRequest): String
 }
 
 class JWTServiceImpl extends JWTService {
@@ -71,4 +73,6 @@ class JWTServiceImpl extends JWTService {
         }
       }else null)
   }
+
+  override def validateJWTToken(decodeRequest: DecodeRequest): String = ???
 }
