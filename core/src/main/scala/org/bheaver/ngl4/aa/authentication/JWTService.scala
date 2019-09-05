@@ -4,6 +4,7 @@ import java.time.Clock
 import java.util.Calendar
 
 import com.typesafe.scalalogging.Logger
+import org.bheaver.ngl4.aa.authentication.exceptions.{BadRequestException, ExpiredTokenException, InvalidTokenException}
 import pdi.jwt.{JwtAlgorithm, JwtJson4s}
 import org.json4s._
 import org.json4s.JsonDSL.WithBigDecimal._
@@ -12,6 +13,7 @@ import pdi.jwt.{JwtAlgorithm, JwtJson4s}
 import org.json4s._
 import org.json4s.JsonDSL.WithBigDecimal._
 import org.json4s.jackson.JsonMethods._
+import org.bheaver.ngl4.util.StringUtil._
 
 import scala.util.{Failure, Success}
 
@@ -25,9 +27,8 @@ trait JWTService {
 
   def isJWTValid(decodeRequest: DecodeRequest): Boolean
 
-  def renewToken(decodeRequest: DecodeRequest): Option[String]
+  def renewToken(decodeRequest: DecodeRequest): JWTRenewTokenResponse
 
-  def validateJWTToken(decodeRequest: DecodeRequest): String
 }
 
 class JWTServiceImpl extends JWTService {
@@ -48,9 +49,17 @@ class JWTServiceImpl extends JWTService {
   override def isJWTValid(decodeRequest: DecodeRequest): Boolean = {
     JwtJson4s.decodeAll(decodeRequest.jwtToken, secretKey, Seq(algo)) match {
 
-      case Failure(exception) => false
+      case Failure(exception) => {
+        logger.error(exception.getMessage)
+        throw new InvalidTokenException("Invalid token")
+        false
+      }
 
       case Success(value) => {
+        value._2.expiration match {
+          case Some(value) => if(value<System.currentTimeMillis()) throw new ExpiredTokenException("Token expired")
+          case None => throw new InvalidTokenException("Invalid token")
+        }
         val value1 = parse(value._2.content).extract[Map[String, String]]
         value1("patronId").equals(decodeRequest.patronId) &&
           value1("libCode").equals(decodeRequest.libCode) &&
@@ -62,17 +71,19 @@ class JWTServiceImpl extends JWTService {
     }
   }
 
-  override def renewToken(decodeRequest: DecodeRequest): Option[String] = {
+  override def renewToken(decodeRequest: DecodeRequest): JWTRenewTokenResponse = {
+
     implicit val clock = Clock.systemUTC()
+    if(isEmpty(decodeRequest.patronId) || isEmpty(decodeRequest.libCode) || isEmpty(decodeRequest.jwtToken)) throw new BadRequestException("Not enough parameters")
     Option(decodeRequest)
       .map(decodeRequestIn => isJWTValid(decodeRequestIn))
       .map(isValid => if(isValid) {
         JwtJson4s.decodeAll(decodeRequest.jwtToken, secretKey, Seq(algo)) match {
           case Failure(exception) => null
-          case Success(value) =>JwtJson4s.encode(value._2.expiresIn(30 * 60 ))
+          case Success(value) => if(decodeRequest.renewToken) encode(EncodeRequest(decodeRequest.patronId,decodeRequest.libCode)) else decodeRequest.jwtToken
         }
       }else null)
+      .map(token => JWTRenewTokenResponse(token))
+      .get
   }
-
-  override def validateJWTToken(decodeRequest: DecodeRequest): String = ???
 }
