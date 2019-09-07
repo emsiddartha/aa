@@ -3,7 +3,8 @@ package org.bheaver.ngl4.aa.controllers
 import java.util.concurrent.CompletionStage
 
 import javax.servlet.http.HttpServletResponse
-import org.bheaver.ngl4.aa.authentication.{DecodeRequest, JWTService}
+import org.bheaver.ngl4.aa.protocol.authentication.JWTService
+import org.bheaver.ngl4.aa.protocol.model.DecodeRequest
 import org.bheaver.ngl4.util.exceptions.HTTPException
 import org.springframework.beans.factory.annotation.{Autowired, Qualifier}
 import org.springframework.web.bind.annotation.{GetMapping, RequestBody, RequestMapping, RestController}

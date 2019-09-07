@@ -1,26 +1,23 @@
-package org.bheaver.ngl4.aa.authentication
+package org.bheaver.ngl4.aa.protocol.authentication
 
 import java.time.Clock
 import java.util.Calendar
 
 import com.typesafe.scalalogging.Logger
-import org.bheaver.ngl4.aa.authentication.exceptions.{BadRequestException, ExpiredTokenException, InvalidTokenException}
-import pdi.jwt.{JwtAlgorithm, JwtJson4s}
-import org.json4s._
-import org.json4s.JsonDSL.WithBigDecimal._
-import org.json4s.jackson.JsonMethods._
-import pdi.jwt.{JwtAlgorithm, JwtJson4s}
-import org.json4s._
-import org.json4s.JsonDSL.WithBigDecimal._
-import org.json4s.jackson.JsonMethods._
+import org.bheaver.ngl4.aa.protocol.exceptions.{BadRequestException, ExpiredTokenException, InvalidTokenException}
+import org.bheaver.ngl4.aa.protocol.model.{DecodeRequest, JWTRenewTokenResponse}
 import org.bheaver.ngl4.util.StringUtil._
+import org.bheaver.ngl4.util.UUIDGenerator
+import org.json4s.JsonDSL.WithBigDecimal._
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
+import pdi.jwt.{JwtAlgorithm, JwtJson4s}
 
 import scala.util.{Failure, Success}
 
 
 case class EncodeRequest(patronId: String, libCode: String)
 
-case class DecodeRequest(jwtToken: String, patronId: String, libCode: String, renewToken: Boolean = true, requestId: String = null)
 
 trait JWTService {
   def encode(encodeRequest: EncodeRequest): String
@@ -83,7 +80,7 @@ class JWTServiceImpl extends JWTService {
           case Success(value) => if(decodeRequest.renewToken) encode(EncodeRequest(decodeRequest.patronId,decodeRequest.libCode)) else decodeRequest.jwtToken
         }
       }else null)
-      .map(token => JWTRenewTokenResponse(token))
+      .map(token => JWTRenewTokenResponse(token,UUIDGenerator.generateReturnRequestId(decodeRequest.requestId)))
       .get
   }
 }

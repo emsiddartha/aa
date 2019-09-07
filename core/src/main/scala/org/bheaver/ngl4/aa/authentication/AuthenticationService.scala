@@ -3,7 +3,9 @@ package org.bheaver.ngl4.aa.authentication
 import org.bheaver.ngl4.util.UUIDGenerator
 import com.typesafe.scalalogging.Logger
 import org.bheaver.ngl4.aa.authentication.datastore.PatronDS
-import org.bheaver.ngl4.aa.authentication.exceptions.{AuthenticationFailureException, BadRequestException}
+import org.bheaver.ngl4.aa.authentication.exceptions.AuthenticationFailureException
+import org.bheaver.ngl4.aa.protocol.authentication.{EncodeRequest, JWTService}
+import org.bheaver.ngl4.aa.protocol.exceptions.BadRequestException
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}

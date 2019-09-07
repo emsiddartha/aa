@@ -4,7 +4,9 @@ package org.bheaver.ngl4.aa.authentication
 import com.typesafe.scalalogging.Logger
 import org.bheaver.ngl4.aa.{AsyncUnitTestBase, UnitTestBase}
 import org.bheaver.ngl4.aa.authentication.datastore.PatronDS
-import org.bheaver.ngl4.aa.authentication.exceptions.{AuthenticationFailureException, BadRequestException}
+import org.bheaver.ngl4.aa.authentication.exceptions.AuthenticationFailureException
+import org.bheaver.ngl4.aa.protocol.authentication.{EncodeRequest, JWTService}
+import org.bheaver.ngl4.aa.protocol.exceptions.BadRequestException
 import org.scalamock.scalatest.AsyncMockFactory
 import org.scalatest.AsyncFlatSpec
 import org.scalatest.RecoverMethods._

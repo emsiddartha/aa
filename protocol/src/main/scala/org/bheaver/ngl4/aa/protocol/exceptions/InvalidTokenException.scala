@@ -1,4 +1,4 @@
-package org.bheaver.ngl4.aa.authentication.exceptions
+package org.bheaver.ngl4.aa.protocol.exceptions
 
 import org.bheaver.ngl4.util.exceptions.HTTPException
 

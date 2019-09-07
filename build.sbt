@@ -1,6 +1,8 @@
-version := "0.1"
+ThisBuild / version := "0.1"
 
+ThisBuild / organization := "org.bheaver.ngl4"
 ThisBuild / scalaVersion := "2.13.0"
+
 
 val scalactic = "org.scalactic" %% "scalactic" % "3.0.8"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.8"
@@ -17,8 +19,10 @@ val jwtJson4s = "com.pauldijou" %% "jwt-json4s-jackson" % "4.0.0"
 val utillib = "org.bheaver.ngl4" %% "util-lib" % "0.1"
 val scalatime = "com.github.nscala-time" %% "nscala-time" % "2.22.0"
 
-lazy val core = (project in file("core")).dependsOn(protocol).settings(
-  name := "core",
+val asyncHttpClient = "com.softwaremill.sttp" %% "async-http-client-backend-future" % "1.6.5"
+
+lazy val aacore = (project in file("core")).dependsOn(protocol).settings(
+  name := "aa-core",
   libraryDependencies += scalaTest % Test,
   libraryDependencies += scalaMock % Test,
   libraryDependencies += scalactic,
@@ -34,9 +38,14 @@ lazy val core = (project in file("core")).dependsOn(protocol).settings(
 )
 
 lazy val protocol = (project in file("protocol")).settings(
-  name := "protocol"
+  name := "aa-protocol",
+  libraryDependencies += asyncHttpClient,
+  libraryDependencies += utillib,
+  libraryDependencies += logging,
+  libraryDependencies += json4s,
+  libraryDependencies += jwtJson4s
 )
 
-lazy val root = (project in file(".")).aggregate(core,protocol).settings(
+lazy val root = (project in file(".")).aggregate(aacore,protocol).settings(
   name := "aa"
 )
