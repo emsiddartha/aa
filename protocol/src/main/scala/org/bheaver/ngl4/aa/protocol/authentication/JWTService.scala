@@ -4,10 +4,11 @@ import java.time.Clock
 import java.util.Calendar
 
 import com.typesafe.scalalogging.Logger
-import org.bheaver.ngl4.aa.protocol.exceptions.{BadRequestException, ExpiredTokenException, InvalidTokenException}
+import org.bheaver.ngl4.aa.protocol.exceptions.{ExpiredTokenException, InvalidTokenException}
 import org.bheaver.ngl4.aa.protocol.model.{DecodeRequest, JWTRenewTokenResponse}
 import org.bheaver.ngl4.util.StringUtil._
 import org.bheaver.ngl4.util.UUIDGenerator
+import org.bheaver.ngl4.util.exceptions.BadRequestException
 import org.json4s.JsonDSL.WithBigDecimal._
 import org.json4s._
 import org.json4s.jackson.JsonMethods._

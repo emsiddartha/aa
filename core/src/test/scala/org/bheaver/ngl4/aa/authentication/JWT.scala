@@ -3,9 +3,10 @@ package org.bheaver.ngl4.aa.authentication
 import com.typesafe.scalalogging.Logger
 import org.bheaver.ngl4.aa.UnitTestBase
 import org.bheaver.ngl4.aa.protocol.authentication.{EncodeRequest, JWTServiceImpl}
-import org.bheaver.ngl4.aa.protocol.exceptions.{BadRequestException, ExpiredTokenException, InvalidTokenException}
+import org.bheaver.ngl4.aa.protocol.exceptions.{ExpiredTokenException, InvalidTokenException}
 import org.bheaver.ngl4.aa.protocol.model.DecodeRequest
 import org.bheaver.ngl4.aa.protocol.model.JWTRenewTokenResponse
+import org.bheaver.ngl4.util.exceptions.BadRequestException
 class JWT extends UnitTestBase {
   val logger = Logger(classOf[JWT])
 

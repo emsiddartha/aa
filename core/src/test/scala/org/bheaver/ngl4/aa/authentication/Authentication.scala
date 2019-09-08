@@ -6,7 +6,6 @@ import org.bheaver.ngl4.aa.{AsyncUnitTestBase, UnitTestBase}
 import org.bheaver.ngl4.aa.authentication.datastore.PatronDS
 import org.bheaver.ngl4.aa.authentication.exceptions.AuthenticationFailureException
 import org.bheaver.ngl4.aa.protocol.authentication.{EncodeRequest, JWTService}
-import org.bheaver.ngl4.aa.protocol.exceptions.BadRequestException
 import org.scalamock.scalatest.AsyncMockFactory
 import org.scalatest.AsyncFlatSpec
 import org.scalatest.RecoverMethods._
@@ -14,6 +13,7 @@ import org.scalatest.RecoverMethods._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.global
 import org.bheaver.ngl4.util.DateUtil._
+import org.bheaver.ngl4.util.exceptions.BadRequestException
 
 import scala.annotation.elidable
 

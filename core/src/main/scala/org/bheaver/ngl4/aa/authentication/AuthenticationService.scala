@@ -5,11 +5,11 @@ import com.typesafe.scalalogging.Logger
 import org.bheaver.ngl4.aa.authentication.datastore.PatronDS
 import org.bheaver.ngl4.aa.authentication.exceptions.AuthenticationFailureException
 import org.bheaver.ngl4.aa.protocol.authentication.{EncodeRequest, JWTService}
-import org.bheaver.ngl4.aa.protocol.exceptions.BadRequestException
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
 import org.bheaver.ngl4.util.DateUtil._
+import org.bheaver.ngl4.util.exceptions.BadRequestException
 
 trait AuthenticationService {
   @throws(classOf[BadRequestException])
