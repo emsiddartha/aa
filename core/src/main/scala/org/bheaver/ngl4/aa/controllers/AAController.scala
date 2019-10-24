@@ -7,11 +7,12 @@ import javax.servlet.http.HttpServletResponse
 import org.bheaver.ngl4.aa.authentication.{AuthenticationRequest, AuthenticationService}
 import org.bheaver.ngl4.util.exceptions.HTTPException
 import org.bheaver.ngl4.util.json.ExceptionJSONGenerator.JSONGenerator
+import org.bheaver.ngl4.util.json.NewJSONGenerator
 import org.json4s._
 import org.json4s.jackson.Serialization.write
 import org.springframework.beans.factory.annotation.{Autowired, Qualifier}
-import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.{GetMapping, RequestBody, RequestMapping, RestController}
+import org.springframework.http.{HttpMethod, HttpStatus, MediaType}
+import org.springframework.web.bind.annotation.{CrossOrigin, GetMapping, RequestBody, RequestMapping, RequestMethod, RestController}
 
 import scala.compat.java8.FutureConverters
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -28,7 +29,7 @@ class AAController {
   @Qualifier("AuthenticationService")
   var authenticationService: AuthenticationService = null
 
-  @GetMapping(value = Array("/v1/authenticate"), produces = Array(MediaType.APPLICATION_JSON_VALUE))
+  @RequestMapping(value = Array("/v1/authenticate"), produces = Array(MediaType.APPLICATION_JSON_VALUE), method = Array(RequestMethod.GET,RequestMethod.POST))
   def authenticate(@RequestBody authenticationRequest: AuthenticationRequest,
                    httpServletResponse: HttpServletResponse): CompletionStage[String] = {
     FutureConverters.toJava(

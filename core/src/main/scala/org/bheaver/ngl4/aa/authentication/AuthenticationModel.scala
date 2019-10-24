@@ -1,5 +1,7 @@
 package org.bheaver.ngl4.aa.authentication
 
+import org.bheaver.ngl4.util.model.HTTPResponse
+
 class AuthenticationModel
 
 case class AuthenticationRequest(libCode: String,
@@ -16,4 +18,4 @@ case class AuthenticationSuccessResponse(jwtToken: String,
                                          departmentId: String,
                                          patronCategory: String,
                                          patronCategoryId: String,
-                                         requestId: String)
+                                         requestId: String) extends HTTPResponse

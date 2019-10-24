@@ -6,6 +6,7 @@ import org.mongodb.scala.model.Filters._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import org.bheaver.ngl4.util.DateUtil._
 
 trait PatronDS {
   val collection = "patron"
@@ -26,8 +27,8 @@ class PatronDSImpl(dbConnection: DBConnection) extends PatronDS {
       "mname" -> documents(0).getString("mname"),
       "lname" -> documents(0).getString("lname"),
       "dept_id" -> documents(0).getInteger("dept_id").toString,
-      "membership_start_date" -> documents(0).getDate("membership_start_date").getTime.toString,
-      "membership_end_date" -> documents(0).getDate("membership_expiry_date").getTime.toString,
+      "membership_start_date" -> legacyDateStringToDate(documents(0).getString("membership_start_date")).getTime.toString,
+      "membership_end_date" -> legacyDateStringToDate(documents(0).getString("membership_expiry_date")).getTime.toString,
       "status" -> documents(0).getString("status"))) else None)
   }
 }
