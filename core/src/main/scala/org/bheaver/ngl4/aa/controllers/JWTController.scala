@@ -15,6 +15,7 @@ import org.json4s.jackson.Serialization.write
 
 import scala.compat.java8.FutureConverters
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 @RestController
 @RequestMapping(Array("/aa"))
@@ -28,7 +29,6 @@ class JWTController {
   def renewJWTToken(@RequestBody decodeRequest: DecodeRequest,
                     httpServletResponse: HttpServletResponse): CompletionStage[String] = {
     implicit val formats = DefaultFormats
-    implicit val global = scala.concurrent.ExecutionContext.global
     FutureConverters.toJava(Future {
       write(jwtService.renewToken(decodeRequest))
     }.recover{

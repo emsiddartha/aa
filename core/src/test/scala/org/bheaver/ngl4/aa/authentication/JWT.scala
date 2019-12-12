@@ -1,8 +1,9 @@
+
 package org.bheaver.ngl4.aa.authentication
 
 import com.typesafe.scalalogging.Logger
 import org.bheaver.ngl4.aa.UnitTestBase
-import org.bheaver.ngl4.aa.protocol.authentication.{EncodeRequest, JWTServiceImpl}
+import org.bheaver.ngl4.aa.protocol.authentication.{EncodeRequest, JWTService, JWTServiceNS}
 import org.bheaver.ngl4.aa.protocol.exceptions.{ExpiredTokenException, InvalidTokenException}
 import org.bheaver.ngl4.aa.protocol.model.DecodeRequest
 import org.bheaver.ngl4.aa.protocol.model.JWTRenewTokenResponse
@@ -11,7 +12,9 @@ class JWT extends UnitTestBase {
   val logger = Logger(classOf[JWT])
 
   def fixture = new {
-    val jwtService = new JWTServiceImpl
+    val jwtService:JWTService = new JWTServiceNS {
+      override val jwtService: JWTService = new JWTServiceImpl
+    }.jwtService
   }
 
   behavior of "JWTService"
@@ -52,3 +55,4 @@ class JWT extends UnitTestBase {
     assert(f.jwtService.isJWTValid(DecodeRequest(renewedToken.token, "DTE6DAY1", "lib1", false)) && token.equals(renewedToken.token))
   }
 }
+

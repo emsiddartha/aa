@@ -20,6 +20,9 @@ val utillib = "org.bheaver.ngl4" %% "util-lib" % "0.1"
 val scalatime = "com.github.nscala-time" %% "nscala-time" % "2.22.0"
 
 val asyncHttpClient = "com.softwaremill.sttp" %% "async-http-client-backend-future" % "1.6.5"
+val akkahttp = "com.typesafe.akka" %% "akka-http"   % "10.1.11"
+val akkaspray = "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.11"
+val akkastream = "com.typesafe.akka" %% "akka-stream" % "2.5.26"
 
 lazy val aacore = (project in file("core")).dependsOn(protocol).settings(
   name := "aa-core",
@@ -34,7 +37,10 @@ lazy val aacore = (project in file("core")).dependsOn(protocol).settings(
   libraryDependencies += typesafe,
   libraryDependencies += jwtJson4s,
   libraryDependencies += utillib,
-  libraryDependencies += scalatime
+  libraryDependencies += scalatime,
+  libraryDependencies += akkahttp,
+  libraryDependencies += akkaspray,
+  libraryDependencies += akkastream
 )
 
 lazy val protocol = (project in file("protocol")).settings(

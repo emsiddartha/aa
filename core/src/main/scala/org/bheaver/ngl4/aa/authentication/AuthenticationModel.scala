@@ -4,12 +4,12 @@ import org.bheaver.ngl4.util.model.HTTPResponse
 
 class AuthenticationModel
 
-case class AuthenticationRequest(libCode: String,
+final case class AuthenticationRequest(libCode: String,
                                  userName: String,
                                  password: String,
-                                 requestId: String)
+                                 requestId: Option[String])
 
-case class AuthenticationSuccessResponse(jwtToken: String,
+final case class AuthenticationSuccessResponse(jwtToken: String,
                                          patronId: String,
                                          fname: String,
                                          mname: String,
