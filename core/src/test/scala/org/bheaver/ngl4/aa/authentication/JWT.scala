@@ -22,20 +22,20 @@ class JWT extends UnitTestBase {
 
   it should "throw BadRequestException if DecodeRequest does not have userId or libCode or JWTToken" in {
     val f = fixture
-    assertThrows[BadRequestException](f.jwtService.renewToken(DecodeRequest("", "", "")))
+    assertThrows[BadRequestException](f.jwtService.renewToken(DecodeRequest("", "", "",Option.empty,Option.empty)))
   }
 
   it should "throw ExpiredTokenException if DecodeRequest has expired token" in {
     val f = fixture
-    assertThrows[ExpiredTokenException](f.jwtService.renewToken(DecodeRequest("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJCaGVhdmVyIEluYyIsImF1ZCI6Ik5HTDQgQXBwIiwiaWF0IjoxNTY3NTU3MzA3NTc2LCJleHAiOjE1Njc1NTkxMDc1NzYsInBhdHJvbklkIjoiRFRFNkRBWTEiLCJsaWJDb2RlIjoibGliMSJ9.9Jm7oUslrMUJ64sUdVEL05rKyP-ixb1CFpANX7ohK1U", "DTE6DAY1", "lib1")))
+    assertThrows[ExpiredTokenException](f.jwtService.renewToken(DecodeRequest("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJCaGVhdmVyIEluYyIsImF1ZCI6Ik5HTDQgQXBwIiwiaWF0IjoxNTY3NTU3MzA3NTc2LCJleHAiOjE1Njc1NTkxMDc1NzYsInBhdHJvbklkIjoiRFRFNkRBWTEiLCJsaWJDb2RlIjoibGliMSJ9.9Jm7oUslrMUJ64sUdVEL05rKyP-ixb1CFpANX7ohK1U", "DTE6DAY1", "lib1",Option.empty,Option.empty)))
   }
   it should "throw InvalidTokenException if JWTToken is invalid" in {
     val f = fixture
-    assertThrows[InvalidTokenException](f.jwtService.renewToken(DecodeRequest("SomeJunkToken", "DTE6DAY1", "lib1")))
+    assertThrows[InvalidTokenException](f.jwtService.renewToken(DecodeRequest("SomeJunkToken", "DTE6DAY1", "lib1",Option.empty,Option.empty)))
   }
   it should "throw InvalidTokenException if DecodeRequest has token claims that do not match with userId and libCode" in {
     val f = fixture
-    assertThrows[ExpiredTokenException](f.jwtService.renewToken(DecodeRequest("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJCaGVhdmVyIEluYyIsImF1ZCI6Ik5HTDQgQXBwIiwiaWF0IjoxNTY3NTU3MzA3NTc2LCJleHAiOjE1Njc1NTkxMDc1NzYsInBhdHJvbklkIjoiRFRFNkRBWTEiLCJsaWJDb2RlIjoibGliMSJ9.9Jm7oUslrMUJ64sUdVEL05rKyP-ixb1CFpANX7ohK1U", "1", "lib1")))
+    assertThrows[ExpiredTokenException](f.jwtService.renewToken(DecodeRequest("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJCaGVhdmVyIEluYyIsImF1ZCI6Ik5HTDQgQXBwIiwiaWF0IjoxNTY3NTU3MzA3NTc2LCJleHAiOjE1Njc1NTkxMDc1NzYsInBhdHJvbklkIjoiRFRFNkRBWTEiLCJsaWJDb2RlIjoibGliMSJ9.9Jm7oUslrMUJ64sUdVEL05rKyP-ixb1CFpANX7ohK1U", "1", "lib1",Option.empty,Option.empty)))
   }
 
   it should "generate a new valid token if everything is valid and renewToken is true" in {
@@ -44,15 +44,15 @@ class JWT extends UnitTestBase {
     */
     val f = fixture
     val token = f.jwtService.encode(EncodeRequest("DTE6DAY1", "lib1"))
-    val renewedToken = f.jwtService.renewToken(DecodeRequest(token, "DTE6DAY1", "lib1", true))
-    assert(f.jwtService.isJWTValid(DecodeRequest(renewedToken.token, "DTE6DAY1", "lib1", false)))
+    val renewedToken = f.jwtService.renewToken(DecodeRequest(token, "DTE6DAY1", "lib1", Option(true),Option.empty))
+    assert(f.jwtService.isJWTValid(DecodeRequest(renewedToken.token, "DTE6DAY1", "lib1", Option(false),Option.empty)))
   }
 
   it should "return same token if everything is valid and renewToken is false" in {
     val f = fixture
     val token = f.jwtService.encode(EncodeRequest("DTE6DAY1", "lib1"))
-    val renewedToken = f.jwtService.renewToken(DecodeRequest(token, "DTE6DAY1", "lib1", false))
-    assert(f.jwtService.isJWTValid(DecodeRequest(renewedToken.token, "DTE6DAY1", "lib1", false)) && token.equals(renewedToken.token))
+    val renewedToken = f.jwtService.renewToken(DecodeRequest(token, "DTE6DAY1", "lib1", Option(false),Option.empty))
+    assert(f.jwtService.isJWTValid(DecodeRequest(renewedToken.token, "DTE6DAY1", "lib1", Option(false),Option.empty)) && token.equals(renewedToken.token))
   }
 }
 

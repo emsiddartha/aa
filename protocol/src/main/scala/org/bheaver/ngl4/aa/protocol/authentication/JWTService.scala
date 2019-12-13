@@ -79,10 +79,11 @@ trait JWTServiceNS {
         .map(isValid => if(isValid) {
           JwtJson4s.decodeAll(decodeRequest.jwtToken, secretKey, Seq(algo)) match {
             case Failure(exception) => null
-            case Success(value) => if(decodeRequest.renewToken) encode(EncodeRequest(decodeRequest.patronId,decodeRequest.libCode)) else decodeRequest.jwtToken
+            //case Success(value) => if(decodeRequest.renewToken) encode(EncodeRequest(decodeRequest.patronId,decodeRequest.libCode)) else decodeRequest.jwtToken
+            case  Success(value) => decodeRequest.renewToken.map(b => if(b) encode(EncodeRequest(decodeRequest.patronId,decodeRequest.libCode)) else decodeRequest.jwtToken).getOrElse(decodeRequest.jwtToken)
           }
         }else null)
-        .map(token => JWTRenewTokenResponse(token,UUIDGenerator.generateReturnRequestId(decodeRequest.requestId)))
+        .map(token => JWTRenewTokenResponse(token,decodeRequest.requestId.getOrElse(UUIDGenerator.generateReturnRequestId(null))))
         .get
     }
   }
