@@ -22,7 +22,7 @@ val asyncHttpClient = "com.softwaremill.sttp" %% "async-http-client-backend-futu
 val akkahttp = "com.typesafe.akka" %% "akka-http"   % "10.1.11"
 val akkaspray = "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.11"
 val akkastream = "com.typesafe.akka" %% "akka-stream" % "2.5.26"
-
+val akkacors = "ch.megard" %% "akka-http-cors" % "0.4.2"
 lazy val aacore = (project in file("core")).dependsOn(protocol).settings(
   name := "aa-core",
   libraryDependencies += scalaTest % Test,
@@ -38,7 +38,8 @@ lazy val aacore = (project in file("core")).dependsOn(protocol).settings(
   libraryDependencies += scalatime,
   libraryDependencies += akkahttp,
   libraryDependencies += akkaspray,
-  libraryDependencies += akkastream
+  libraryDependencies += akkastream,
+  libraryDependencies += akkacors
 )
 
 lazy val protocol = (project in file("protocol")).settings(
