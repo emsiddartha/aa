@@ -2,15 +2,16 @@ package org.bheaver.ngl4.aa.controllers
 
 import java.util.concurrent.CompletionStage
 
+import com.google.inject.Inject
 import com.typesafe.scalalogging.Logger
 import javax.servlet.http.HttpServletResponse
 import org.bheaver.ngl4.aa.authentication.{AuthenticationRequest, AuthenticationService}
+import org.bheaver.ngl4.aa.conf.BeanRegistry
 import org.bheaver.ngl4.util.exceptions.HTTPException
 import org.bheaver.ngl4.util.json.ExceptionJSONGenerator.JSONGenerator
 import org.bheaver.ngl4.util.json.NewJSONGenerator._
 import org.json4s._
 import org.json4s.jackson.Serialization.write
-import org.springframework.beans.factory.annotation.{Autowired, Qualifier}
 import org.springframework.http.{HttpMethod, HttpStatus, MediaType}
 import org.springframework.web.bind.annotation.{CrossOrigin, GetMapping, RequestBody, RequestMapping, RequestMethod, RestController}
 
@@ -25,9 +26,8 @@ class AAController {
   implicit val formats = DefaultFormats
   val logger = Logger(classOf[AAController])
 
-  @Autowired
-  @Qualifier("AuthenticationService")
-  var authenticationService: AuthenticationService = null
+
+  var authenticationService: AuthenticationService = BeanRegistry.getAuthenticationService
 
   @RequestMapping(value = Array("/v1/authenticate"), produces = Array(MediaType.APPLICATION_JSON_VALUE), method = Array(RequestMethod.GET,RequestMethod.POST))
   def authenticate(@RequestBody authenticationRequest: AuthenticationRequest,

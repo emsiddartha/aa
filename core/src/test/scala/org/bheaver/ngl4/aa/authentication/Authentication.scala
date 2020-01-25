@@ -3,9 +3,9 @@ package org.bheaver.ngl4.aa.authentication
 
 import com.typesafe.scalalogging.Logger
 import org.bheaver.ngl4.aa.{AsyncUnitTestBase, UnitTestBase}
-import org.bheaver.ngl4.aa.authentication.datastore.{PatronDS, PatronDSNS}
+import org.bheaver.ngl4.aa.authentication.datastore.{PatronDS}
 import org.bheaver.ngl4.aa.authentication.exceptions.AuthenticationFailureException
-import org.bheaver.ngl4.aa.protocol.authentication.{EncodeRequest, JWTService, JWTServiceNS}
+import org.bheaver.ngl4.aa.protocol.authentication.{EncodeRequest, JWTService}
 import org.scalamock.scalatest.AsyncMockFactory
 import org.scalatest.AsyncFlatSpec
 import org.scalatest.RecoverMethods._
@@ -23,15 +23,15 @@ class AuthenticationSync extends UnitTestBase {
   it should "throw BadRequest if any parameter except request id is empty" in {
     val s: PatronDS = mock[PatronDS]
     val service: JWTService = mock[JWTService]
-    object testEnv extends AuthenticationServiceNS with PatronDSNS with JWTServiceNS {
-      override val authenticateService: AuthenticationService = new AuthenticationServiceImpl
-      override val patronDS: PatronDS = s
-      override val jwtService: JWTService = service
-    }
-    val authenticationServiceImpl: AuthenticationService = testEnv.authenticateService
+
+
+   val patronDS: PatronDS = s
+    val jwtService: JWTService = service
+    val authenticationServiceImpl: AuthenticationService = new AuthenticationServiceImpl(s,service)
+
 
     assertThrows[BadRequestException] {
-      authenticationServiceImpl.authenticate(AuthenticationRequest("", "", "", Option("")))
+      authenticationServiceImpl.authenticate(AuthenticationRequest("", "", "", ""))
     }
   }
 }
@@ -55,16 +55,17 @@ class Authentication extends AsyncUnitTestBase {
           , "status" -> "A")
       )
     }
-    object testEnv extends AuthenticationServiceNS with PatronDSNS with JWTServiceNS {
-      override val authenticateService: AuthenticationService = new AuthenticationServiceImpl
-      override val patronDS: PatronDS = patronDSMock
-      override val jwtService: JWTService = jwtMock
-    }
+
+
+       val patronDS: PatronDS = patronDSMock
+       val jwtService: JWTService = jwtMock
+    val authService: AuthenticationService = new AuthenticationServiceImpl(patronDSMock,jwtMock)
+
     (jwtMock.encode _) expects EncodeRequest("1", "lib1") returns ("JWT Token")
-    val authService: AuthenticationService = testEnv.authenticateService
 
 
-    val authresponseFut = authService.authenticate(AuthenticationRequest("lib1", "1", "abc", Option.empty))
+
+    val authresponseFut = authService.authenticate(AuthenticationRequest("lib1", "1", "abc", null))
     authresponseFut.map((authRes) => {
       assert(authRes != null)
     }
@@ -81,15 +82,15 @@ class Authentication extends AsyncUnitTestBase {
         ).withDefault(str => "None")
       )
     }
-    object testEnv extends AuthenticationServiceNS with PatronDSNS with JWTServiceNS {
-      override val authenticateService: AuthenticationService = new AuthenticationServiceImpl
-      override val patronDS: PatronDS = patronDSMock
-      override val jwtService: JWTService = jwtMock
-    }
-    val authService: AuthenticationService = testEnv.authenticateService
 
 
-    val authresponseFut = authService.authenticate(AuthenticationRequest("lib1", "1", "abc", Option.empty))
+       val patronDS: PatronDS = patronDSMock
+       val jwtService: JWTService = jwtMock
+
+    val authService: AuthenticationService = new AuthenticationServiceImpl(patronDSMock,jwtMock)
+
+
+    val authresponseFut = authService.authenticate(AuthenticationRequest("lib1", "1", "abc", null))
     recoverToSucceededIf[AuthenticationFailureException](authresponseFut)
   }
   it should "throw Authentication Exception when Membership is on hold" in {
@@ -105,15 +106,15 @@ class Authentication extends AsyncUnitTestBase {
       )
     }
     //(jwtMock.encode _) expects EncodeRequest("1", "lib1") returns  ("JWT Token")
-    object testEnv extends AuthenticationServiceNS with PatronDSNS with JWTServiceNS {
-      override val authenticateService: AuthenticationService = new AuthenticationServiceImpl
-      override val patronDS: PatronDS = patronDSMock
-      override val jwtService: JWTService = jwtMock
-    }
-    val authService: AuthenticationService = testEnv.authenticateService
 
 
-    val authresponseFut = authService.authenticate(AuthenticationRequest("lib1", "1", "abc", Option.empty))
+       val patronDS: PatronDS = patronDSMock
+       val jwtService: JWTService = jwtMock
+
+    val authService: AuthenticationService = new AuthenticationServiceImpl(patronDSMock,jwtMock)
+
+
+    val authresponseFut = authService.authenticate(AuthenticationRequest("lib1", "1", "abc", null))
     recoverToSucceededIf[AuthenticationFailureException](authresponseFut)
 
   }
@@ -133,13 +134,12 @@ class Authentication extends AsyncUnitTestBase {
       )
     }
     (jwtMock.encode _) expects EncodeRequest("DTE6DAY1", "lib1") returns ("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJCaGVhdmVyIEluYyIsImF1ZCI6Ik5HTDQgQXBwIiwiaWF0IjoxNTY3NDIxODA4OTc0LCJleHAiOjE1Njc0MjM2MDg5NzQsInBhdHJvbklkIjoiRFRFNkRBWTEiLCJsaWJDb2RlIjoibGliMSJ9.GWfqkTkcWMVMjAUPoIgMJ7EpaHkuXPJ-TEgJ4HMX_iU")
-    object testEnv extends AuthenticationServiceNS with PatronDSNS with JWTServiceNS {
-      override val authenticateService: AuthenticationService = new AuthenticationServiceImpl
-      override val patronDS: PatronDS = patronDSMock
-      override val jwtService: JWTService = jwtMock
-    }
-    val authService: AuthenticationService = testEnv.authenticateService
-    val authresponseFut = authService.authenticate(AuthenticationRequest("lib1", "DTE6DAY1", "abc", Option.empty))
+
+      val patronDS: PatronDS = patronDSMock
+      val jwtService: JWTService = jwtMock
+
+    val authService: AuthenticationService = new AuthenticationServiceImpl(patronDSMock,jwtMock)
+    val authresponseFut = authService.authenticate(AuthenticationRequest("lib1", "DTE6DAY1", "abc", null))
     authresponseFut.map(authRes => {
       assert(List(
         assert(authRes.jwtToken == "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJCaGVhdmVyIEluYyIsImF1ZCI6Ik5HTDQgQXBwIiwiaWF0IjoxNTY3NDIxODA4OTc0LCJleHAiOjE1Njc0MjM2MDg5NzQsInBhdHJvbklkIjoiRFRFNkRBWTEiLCJsaWJDb2RlIjoibGliMSJ9.GWfqkTkcWMVMjAUPoIgMJ7EpaHkuXPJ-TEgJ4HMX_iU"),

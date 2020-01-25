@@ -2,6 +2,7 @@ package org.bheaver.ngl4.aa.controllers
 
 import java.util.concurrent.CompletionStage
 
+import com.google.inject.Inject
 import javax.servlet.http.HttpServletResponse
 import org.bheaver.ngl4.aa.protocol.authentication.JWTService
 import org.bheaver.ngl4.aa.protocol.model.DecodeRequest
@@ -21,8 +22,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @RequestMapping(Array("/aa"))
 class JWTController {
 
-  @Autowired
-  @Qualifier("JWTService")
+
+  @Inject
   var jwtService: JWTService = null
 
   @GetMapping(value = Array("/v1/renewToken"), produces = Array(MediaType.APPLICATION_JSON_VALUE))

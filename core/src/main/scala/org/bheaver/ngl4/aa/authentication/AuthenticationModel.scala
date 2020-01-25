@@ -7,7 +7,7 @@ class AuthenticationModel
 final case class AuthenticationRequest(libCode: String,
                                  userName: String,
                                  password: String,
-                                 requestId: Option[String])
+                                 requestId: String)
 
 final case class AuthenticationSuccessResponse(jwtToken: String,
                                          patronId: String,

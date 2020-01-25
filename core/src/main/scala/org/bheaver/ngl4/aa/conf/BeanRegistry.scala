@@ -1,25 +1,25 @@
 package org.bheaver.ngl4.aa.conf
 
-import org.bheaver.ngl4.aa.authentication.{AuthenticationService, AuthenticationServiceNS}
-import org.bheaver.ngl4.aa.authentication.datastore.{PatronDS, PatronDSNS}
-import org.bheaver.ngl4.aa.protocol.authentication.{JWTService, JWTServiceNS}
+import com.google.inject.{Guice, Inject, Provider, Singleton}
+import org.bheaver.ngl4.aa.authentication.AuthenticationService
+import org.bheaver.ngl4.aa.protocol.authentication.JWTService
 import org.bheaver.ngl4.util.db.DBConnection
 import pureconfig.ConfigReader.Result
+import pureconfig.error.ConfigReaderFailures
 import pureconfig.generic.auto._
-class BeanRegistry {
 
+object BeanRegistry {
+  val injector  = Guice.createInjector(new ProdModule)
+  def getAuthenticationService: AuthenticationService = injector.getInstance(classOf[AuthenticationService])
+  def getJWTService: JWTService = injector.getInstance(classOf[JWTService])
 }
-object ConnectionToDB {
+
+@Singleton
+class ConnectionToDB @Inject() (resultNGLConf: Result[NGLConfig]) extends Provider[DBConnection]{
   val getNGLConfig:NGLConfig = {
-    val value: Result[NGLConfig] = pureconfig.loadConfig[NGLConfig]
-    val config = value.right.get
+    val config = resultNGLConf.right.get
     config
   }
-  val dbCon:DBConnection = DBConnection(getNGLConfig.dbSettings)
 
-}
-object AAServiceRegistry extends AuthenticationServiceNS with PatronDSNS with JWTServiceNS {
-  override val authenticateService: AuthenticationService = new AuthenticationServiceImpl
-  override val patronDS: PatronDS = new PatronDSImpl
-  override val jwtService: JWTService = new JWTServiceImpl
+  override def get(): DBConnection = DBConnection(getNGLConfig.dbSettings)
 }
